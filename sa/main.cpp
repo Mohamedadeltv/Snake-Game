@@ -46,6 +46,9 @@ int cx4=35,cy4=5,cx5=35,cy5=20,cx6=35,cy6=35;
 int cx7=5,cy7=5;
 int cx8=5,cy8=20;
 
+bool sqUp=true;
+int sqDelta=0;
+int maxY=1;
 
 
 int a1=1,a2=0,a3=1;
@@ -59,6 +62,7 @@ void reshape_callback(int,int);
 void timer_callback(int);
 void GameMode();
 void chooseFood();
+void help();
 
 
 void printSome(char *str, int x, int y){
@@ -71,63 +75,61 @@ for(int i=0;i<strlen(str);i++){
 void drawSquares(){
 glColor3f(0.0f, 1.0f, 1.0f); //
 glBegin(GL_POLYGON);
-glVertex2f(cx1-5-sqWid/2, cy1-sqWid/2); // x, y
-glVertex2f(cx1+5+sqWid/2, cy1-sqWid/2); // x, y
-glVertex2f(cx1+5+sqWid/2, cy1+sqWid/2); // x, y
-glVertex2f(cx1-5-sqWid/2, cy1+sqWid/2); // x, y
+glVertex2f(cx1-5-sqWid/2, cy1-sqWid/2+sqDelta); // x, y
+glVertex2f(cx1+5+sqWid/2, cy1-sqWid/2+sqDelta); // x, y
+glVertex2f(cx1+5+sqWid/2, cy1+sqWid/2+sqDelta); // x, y
+glVertex2f(cx1-5-sqWid/2, cy1+sqWid/2+sqDelta); // x, y
 glEnd();
 glColor3f(0,0,0);
 printSome("food color", cx1-2.5, cy1);
 glColor3f(1.0f, 1.0f, 0.0f); //
 glBegin(GL_POLYGON);
-glVertex2f(cx2-5-sqWid/2, cy2-sqWid/2); // x, y
-glVertex2f(cx2+5+sqWid/2, cy2-sqWid/2); // x, y
-glVertex2f(cx2+5+sqWid/2, cy2+sqWid/2); // x, y
-glVertex2f(cx2-5-sqWid/2, cy2+sqWid/2); // x, y
+glVertex2f(cx2-5-sqWid/2, cy2-sqWid/2+sqDelta); // x, y
+glVertex2f(cx2+5+sqWid/2, cy2-sqWid/2+sqDelta); // x, y
+glVertex2f(cx2+5+sqWid/2, cy2+sqWid/2+sqDelta); // x, y
+glVertex2f(cx2-5-sqWid/2, cy2+sqWid/2+sqDelta); // x, y
 glEnd();
 glColor3f(0,0,0);
 printSome("mouse", cx2-2.5, cy2);
 glColor3f(0.0f, 1.0f, 0.0f); //
 glBegin(GL_POLYGON);
-glVertex2f(cx3-5-sqWid/2, cy3-sqWid/2); // x, y
-glVertex2f(cx3+5+sqWid/2, cy3-sqWid/2); // x, y
-glVertex2f(cx3+5+sqWid/2, cy3+sqWid/2); // x, y
-glVertex2f(cx3-5-sqWid/2, cy3+sqWid/2); // x, y
+glVertex2f(cx3-5-sqWid/2, cy3-sqWid/2+sqDelta); // x, y
+glVertex2f(cx3+5+sqWid/2, cy3-sqWid/2+sqDelta); // x, y
+glVertex2f(cx3+5+sqWid/2, cy3+sqWid/2+sqDelta); // x, y
+glVertex2f(cx3-5-sqWid/2, cy3+sqWid/2+sqDelta); // x, y
 glEnd();
 glColor3f(0,0,0);
 printSome("keyboard", cx3-2.5, cy3);
 glColor3f(0.0f, 1.0f, 0.0f); //
 glBegin(GL_POLYGON);
-glVertex2f(cx7-2-sqWid/2, cy7-sqWid/2); // x, y
-glVertex2f(cx7+2+sqWid/2, cy7-sqWid/2); // x, y
-glVertex2f(cx7+2+sqWid/2, cy7+sqWid/2); // x, y
-glVertex2f(cx7-2-sqWid/2, cy7+sqWid/2); // x, y
+glVertex2f(cx7-2-sqWid/2, cy7-sqWid/2+sqDelta); // x, y
+glVertex2f(cx7+2+sqWid/2, cy7-sqWid/2+sqDelta); // x, y
+glVertex2f(cx7+2+sqWid/2, cy7+sqWid/2+sqDelta); // x, y
+glVertex2f(cx7-2-sqWid/2, cy7+sqWid/2+sqDelta); // x, y
 glEnd();
 glColor3f(0,0,0);
 printSome("help", cx7-1.5, cy7);
 glColor3f(0.0f, 1.0f, 0.0f); //
 glBegin(GL_POLYGON);
-glVertex2f(cx8-2-sqWid/2, cy8-sqWid/2); // x, y
-glVertex2f(cx8+2+sqWid/2, cy8-sqWid/2); // x, y
-glVertex2f(cx8+2+sqWid/2, cy8+sqWid/2); // x, y
-glVertex2f(cx8-2-sqWid/2, cy8+sqWid/2); // x, y
+glVertex2f(cx8-2-sqWid/2, cy8-sqWid/2+sqDelta); // x, y
+glVertex2f(cx8+2+sqWid/2, cy8-sqWid/2+sqDelta); // x, y
+glVertex2f(cx8+2+sqWid/2, cy8+sqWid/2+sqDelta); // x, y
+glVertex2f(cx8-2-sqWid/2, cy8+sqWid/2+sqDelta); // x, y
 glEnd();
 glColor3f(0,0,0);
 printSome("diff game", cx8-2.5, cy8);
-
-
-
-    
+if (abs(sqDelta)<=maxY) sqUp=!sqUp ;
+if (sqUp) sqDelta+=1; else sqDelta-=1;
 }
 
 
-void passiveMouse(int x,int y){
-    mouseX = x;
-    mouseX=0.5+1.0*mouseX*logWidth/phyWidth;
-    mouseY = phyHeight - y;
-    mouseY=0.5+1.0*mouseY*logHeight/phyHeight;
-    glutPostRedisplay();
-}
+//void passiveMouse(int x,int y){
+//    mouseX = x;
+//    mouseX=0.5+1.0*mouseX*logWidth/phyWidth;
+//    mouseY = phyHeight - y;
+//    mouseY=0.5+1.0*mouseY*logHeight/phyHeight;
+//    glutPostRedisplay();
+//}
 void Keyboard(unsigned char key, int x, int y) {
 if(key=='m')
     FSB++;
@@ -216,7 +218,7 @@ int main(int argc,char**argv)
     glutSpecialFunc(input_callback);
     glutTimerFunc(0 ,timer_callback,0);
     glutMouseFunc(mouseClick);
-    glutPassiveMotionFunc(passiveMouse);
+//    glutPassiveMotionFunc(passiveMouse);
     glutKeyboardFunc(Keyboard);
     init();
     glutMainLoop();
@@ -257,7 +259,7 @@ void display_callback()
         draw_snake();
     }
     else if (status==7){
-        
+        help();
     }
     else if (status==8){
         draw_grid();
