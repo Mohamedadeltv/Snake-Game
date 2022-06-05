@@ -1,4 +1,14 @@
- #  snake-game
+#  snake-game
+
+# game outline
+the game has 3 modes(easy,meduim,hard) and 2 Levels
+ # Keyboard Controls
+ ### Press M - To increase the speed of the snake
+ ### Press N - To decrease the speed of the snake
+ ### Press Q - To exit the game 
+ ### Press P - To pause the game
+ ### Press A or B or C - To change the color of the food
+ ### Right Mouse Click - To go back to the previous pag
 <img width="600" alt="CamScanner 20220605-203549" src="https://user-images.githubusercontent.com/53130721/172065393-28d92c93-21ca-4064-ae9b-b249fa3ce040.png">
 
 2
