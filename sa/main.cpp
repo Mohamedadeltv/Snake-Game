@@ -1,4 +1,3 @@
-
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -29,9 +28,7 @@ std::ifstream ifile;
 bool game_over=false;
 extern int sDirection;
 int score=0;
-
 float FSB=10;
-
 int phyWidth = 600;
 int phyHeight = 600;
 int logWidth = 40;
@@ -45,14 +42,10 @@ int cx1=20,cy1=5,cx2=20,cy2=20,cx3=20,cy3=35;
 int cx4=35,cy4=5,cx5=35,cy5=20,cx6=35,cy6=35;
 int cx7=5,cy7=5;
 int cx8=5,cy8=20;
-
 bool sqUp=true;
 int sqDelta=0;
 int maxY=1;
-
-
 int a1=1,a2=0,a3=1;
-
 int paused=1;
 
 void init();
@@ -123,13 +116,13 @@ if (sqUp) sqDelta+=1; else sqDelta-=1;
 }
 
 
-//void passiveMouse(int x,int y){
-//    mouseX = x;
-//    mouseX=0.5+1.0*mouseX*logWidth/phyWidth;
-//    mouseY = phyHeight - y;
-//    mouseY=0.5+1.0*mouseY*logHeight/phyHeight;
-//    glutPostRedisplay();
-//}
+void passiveMouse(int x,int y){
+    mouseX = x;
+    mouseX=0.5+1.0*mouseX*logWidth/phyWidth;
+    mouseY = phyHeight - y;
+    mouseY=0.5+1.0*mouseY*logHeight/phyHeight;
+    glutPostRedisplay();
+}
 void Keyboard(unsigned char key, int x, int y) {
 if(key=='m')
     FSB++;
@@ -147,21 +140,37 @@ if (key== 'q')
     if (key == 'c'){
         a1=0;a2=0;a3=1;
     }
-//if (key=='p')
-//{   if(paused == 0){
-//    FSB=10;
-//    paused = 1;
-//
-//}
-//    if(paused==1){
-//        FSB=0.1;
-//        paused=0;
-//    }
-//}
+    if (key == 'w'){
+        if(sDirection!=DOWN)
+            sDirection=UP;
+    }
+    if (key == 'a'){
+        if(sDirection!=RIGHT)
+            sDirection=LEFT;
+    }
+    if (key == 's'){
+        if(sDirection!=UP)
+            sDirection=DOWN;
+    }
+    if (key == 'd'){
+        if(sDirection!=LEFT)
+            sDirection=RIGHT;
+    }
+    if (key=='p')
+{   if(paused == 0){
+    FSB=10;
+    paused = 1;
 
-    
+}
+    if(paused==1){
+        FSB=0.1;
+       paused=0;
+    }
+}
+
+
 glutPostRedisplay();
-    
+
 }
 void mouseClick(int btn, int state, int x, int y)
 {
@@ -199,7 +208,7 @@ void mouseClick(int btn, int state, int x, int y)
     status=8;
         }
     }
-  
+
     if(btn==GLUT_RIGHT_BUTTON && state==GLUT_DOWN){
     status=0;
     }
@@ -218,7 +227,6 @@ int main(int argc,char**argv)
     glutSpecialFunc(input_callback);
     glutTimerFunc(0 ,timer_callback,0);
     glutMouseFunc(mouseClick);
-//    glutPassiveMotionFunc(passiveMouse);
     glutKeyboardFunc(Keyboard);
     init();
     glutMainLoop();
@@ -236,21 +244,34 @@ void display_callback()
 {
     if(game_over)
     {
+        ofile.open("score.dat",std::ios::trunc);
+        ofile<<score<<std::endl;
+        ofile.close();
+        ifile.open("score.dat",std::ios::in);
+        char a[4];
+        ifile>>a;
+        std::cout<<a;
+        char text[50]= "Your score : ";
+        strcat(text,a);
+        MessageBox(NULL,text,"Game Over",0);
         exit(0);
     }
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
-    
+
     if(status==0){drawSquares();}
     else if(status==1) {
         chooseFood();
-        
-    }
-    else if(status==2) {
 
     }
+    else if(status==2) {
+        draw_grid();
+        draw_food();
+        draw_snake();
+        glutPassiveMotionFunc(passiveMouse);
+    }
     else if(status==3) {
-        
+
         GameMode();
 }
     else if(status==4 || status==5 || status==6){
@@ -265,14 +286,20 @@ void display_callback()
         draw_grid();
         draw_food();
         draw_snake2();
-        
+
     }
 
     glutSwapBuffers();
 }
 
 void help(){
-    
+    glColor3f(1,1,1);
+    printSome("Press M - To increase the speed of the snake ", 1, 34);
+    printSome("Press N - To decrease the speed of the snake ", 1, 30);
+    printSome("press Q - To exit the game ", 1, 26);
+    printSome("press P - To pause the game ", 1, 22);
+    printSome("press A or B or C - To change the color of the food ", 1, 18);
+    printSome("Right Mouse Click - To go back to the previous page ", 1, 14);
 }
 
 void chooseFood(){
@@ -286,13 +313,13 @@ void chooseFood(){
     glEnd();
     glColor3f(0,0,0);
     printSome("A", 19.5, 12);
-    
+
     glColor3f(1,1,0);
     glRectd(17.5, 20,  22.5, 25);
     glEnd();
     glColor3f(0,0,0);
     printSome("B", 19.5, 22);
-    
+
     glColor3f(0,0,1);
     glRectd(17.5, 30,  22.5, 35);
     glEnd();
@@ -319,7 +346,7 @@ void GameMode(){
     glVertex2f(cx5-2-sqWid/2, cy5+sqWid/2); // x, y
     glEnd();
     glColor3f(0,0,0);
-    printSome("meduim", cx5-2.5, cy5);
+    printSome("medium", cx5-2.5, cy5);
     glColor3f(0.0f, 1.0f, 0.0f); //
     glBegin(GL_POLYGON);
     glVertex2f(cx6-2-sqWid/2, cy6-sqWid/2); // x, y
@@ -339,7 +366,7 @@ void GameMode(){
             glRectd(i, j, i +1, j +1);
         }
     }
-    
+
     glColor3f(0.24421f, 0.5f, 0.0f);
 
     for(int i=5;i<15;i++){
